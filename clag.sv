@@ -10,10 +10,10 @@ module CLAG #(
     generate
         for (genvar i=0; i<width; i++) begin
             if(i == 0)begin
-                cOut[i] = g[i] | p[i] & CIn;
+                assign cOut[i] = g[i] | p[i] & cIn;
             end
             else begin
-                cOut[i] = g[i] | p[i] & cOut[i-1];
+                assign cOut[i] = g[i] | p[i] & cOut[i-1];
             end
         end
     endgenerate

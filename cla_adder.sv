@@ -9,7 +9,7 @@ module CLA #(
 logic [width-1:0] g, p;
 logic [width-1:0] carry;
 
-assign sum[width] = carry[width];
+assign sum[width] = carry[width-1];
 
 generate
     for(genvar i=0; i<width; i++) begin
@@ -40,6 +40,6 @@ CLAG carry_look_ahead(
     .g   (g), 
     .p   (p),
     .cIn (1'b0),
-    .cOut(carry),
+    .cOut(carry)
 );
 endmodule
