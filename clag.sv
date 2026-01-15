@@ -7,14 +7,26 @@ module CLAG #(
 );
     // Define the carry look-ahead generator here that generates the carries depending on the carry generate and carry propagate signal g and p
 
-    generate
-        for (genvar i=0; i<width; i++) begin
-            if(i == 0)begin
-                assign cOut[i] = g[i] | p[i] & cIn;
+    logic [width:0] carry;
+    assign carry[0] = cIn;
+
+generate
+    for (genvar i=1; i <= width; i=i+1) begin
+        wire [i-1:0] term;
+        for (genvar j=0; j < i; j=j+1) begin
+            wire [i-j-2:0] p_chain;
+            if (j<i-1) begin
+                for (genvar k = j+1; k < i; k = k + 1) begin
+                    assign p_chain[k-(j+1)] = p[k];
+                end
+                assign term[j] = g[j] & (&p_chain);
             end
             else begin
-                assign cOut[i] = g[i] | p[i] & cOut[i-1];
+                assign term[j] = g[j];
             end
         end
-    endgenerate
+        assign carry[i] = (|term) | (&p[0 +: i] & carry[0]);
+    end
+endgenerate
+assign cOut = carry[width:1];
 endmodule
